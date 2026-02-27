@@ -9,7 +9,7 @@ datasource db {
 
 model User {
     id          Int     @id @default(autoincrement())
-    clerkUserId String
+    clerkUserId String  @unique
     email       String  @unique
     name        String?
     image       String
@@ -43,7 +43,7 @@ model Vote {
     postId Int
 }
 
-enum Role { //Перечисление строк
+enum Role {
     user
     admin
 }

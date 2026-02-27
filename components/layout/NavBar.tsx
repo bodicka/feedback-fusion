@@ -3,7 +3,7 @@
 import { Map, MessageSquare, Sparkle } from "lucide-react";
 import Link from "next/link";
 import ThemeToogle from "./ThemeToogle";
-import { SignedOut, SignInButton } from "@clerk/nextjs";
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { Button } from "../ui/button";
 
 const NavBar = () => {
@@ -43,6 +43,9 @@ const NavBar = () => {
               </Button>
             </SignInButton>
           </SignedOut>
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
         </div>
       </div>
     </nav>
