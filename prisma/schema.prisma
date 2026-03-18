@@ -23,7 +23,7 @@ model User {
 model Post {
     id          Int        @id @default(autoincrement())
     title       String
-    deskription String?
+    description String?
     category    String
     status      PostStatus @default(under_review)
     author      User       @relation(fields: [authorId], references: [id])
