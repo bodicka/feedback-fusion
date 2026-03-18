@@ -1,13 +1,20 @@
 "use client";
 
 import { useState } from "react";
-import { Card, CardDescription, CardHeader, CardTitle } from "../ui/card";
-import { User } from "lucide-react";
-import { PrismaPromise } from "@/generated/prisma/internal/prismaNamespace";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
+import { MessageSquare, ThumbsUp, User } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { STATUS_GROUPS } from "@/app/data/status-data";
 import { Badge } from "../ui/badge";
 import { getCategoryDesign } from "@/app/data/category-data";
+import { Button } from "../ui/button";
+import { toast } from "sonner";
 
 const FeedbackList = ({
   initialPosts,
@@ -17,6 +24,59 @@ const FeedbackList = ({
   userId: string | null;
 }) => {
   const [post, setPost] = useState(initialPosts);
+
+  const handleVote = async (postId: number) => {
+    if (!userId) {
+      toast.error("Please sign in to vote on feedback");
+      return;
+    }
+
+    const loadingToast = toast.loading("Submitting vote...");
+
+    try {
+      const response = await fetch("/api/votes", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          postId,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create vote");
+      }
+
+      const data = await response.json();
+
+      toast.dismiss(loadingToast);
+      toast.success(data.voted ? "Vote added!" : "Vote removed");
+
+      setPost(
+        post.map((posts) => {
+          if (posts.id === postId) {
+            const voteCount = posts.votes.length;
+            return {
+              ...posts,
+              vote: data.vote
+                ? [...posts, { userId }]
+                : posts.votes.filter((v: any) => v.userId !== userId),
+              _count: {
+                votes: data.voted ? voteCount + 1 : voteCount - 1,
+              },
+            };
+          }
+          return posts;
+        }),
+      );
+    } catch (error) {
+      console.error("Faled to submit vote.", error);
+
+      toast.dismiss(loadingToast);
+      toast.error("Faled to submit vote. Please try again");
+    }
+  };
 
   return (
     <div className="space-y-4">
@@ -32,7 +92,7 @@ const FeedbackList = ({
                 <CardDescription className="flex items-center gap-1.5 mt-1">
                   <User className="w-3 h-3" />
                   {posts.author.name}
-                  <span></span>
+                  <span>|</span>
                   <span className="whitespace-nowrap">
                     {formatDistanceToNow(new Date(posts.createdAt), {
                       addSuffix: true,
@@ -72,6 +132,26 @@ const FeedbackList = ({
               </div>
             </div>
           </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground mb-3">{posts.description}</p>
+            <div className="flex items-center justify-between">
+              <Button
+                size={"sm"}
+                onClick={() => handleVote(posts.id)}
+                variant={"outline"}
+                className="gap-2"
+              >
+                <ThumbsUp
+                  className={`h-4 w-4 ${posts.votes.some((v: any) => v.userId === userId) ? "fill-current" : ""}`}
+                />
+                {posts.votes.length} Votes
+              </Button>
+              <div className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors">
+                <MessageSquare className="w-4 h-4" />
+                Comment
+              </div>
+            </div>
+          </CardContent>
         </Card>
       ))}
     </div>

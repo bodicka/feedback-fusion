@@ -3,7 +3,7 @@ import { CheckCircle, Clock, Eye, ListCheck } from "lucide-react";
 export const STATUS_ORDER = [
   "under_review",
   "planned",
-  "in_progress",
+  "in_projess",
   "completed",
 ];
 
@@ -28,7 +28,7 @@ export const STATUS_GROUPS = {
     textColor: "text-blue-700 dark:text-blue-300",
     countColor: "bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300",
   },
-  in_progress: {
+  in_projess: {
     title: "In Progress",
     description: "Currently being developed",
     icon: Clock,
