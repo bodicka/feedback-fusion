@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 interface GradientHeaderProps {
   title: string;
   subtitle?: string;
-  children: ReactNode;
+  children?: ReactNode;
 }
 
 const GradientHeader = ({ title, subtitle, children }: GradientHeaderProps) => {

@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import Footer from "@/components/layout/Footer";
 import NavBar from "@/components/layout/NavBar";
-import { ClerkProvider } from "@clerk/nextjs";
 import ThemeProvider from "@/components/layout/ThemeProvider";
-import { syncCurrentUser } from "@/lib/sync-user";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,7 +19,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  await syncCurrentUser();
   return (
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
