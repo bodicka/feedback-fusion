@@ -31,6 +31,7 @@ export async function PATCH(
 
     const { status } = await request.json();
     const { id: postId } = await params;
+    const numerickPostId = Number(postId);
 
     //Validate status
     if (!STATUS_ORDER.includes(status)) {
@@ -38,7 +39,7 @@ export async function PATCH(
     }
 
     const updatePost = await prisma.post.update({
-      where: { id: postId },
+      where: { id: numerickPostId },
       data: {
         status,
       },
