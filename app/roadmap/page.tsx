@@ -14,7 +14,9 @@ import { Badge } from "@/components/ui/badge";
 
 function getStatusPercentage(posts: any[], status: string) {
   const total = posts.length;
-  const count = posts.filter((p: { status: string }) => p.status === status);
+  const count = posts.filter(
+    (p: { status: string }) => p.status === status,
+  ).length;
   return total > 0 ? Math.round((count / total) * 100) : 0;
 }
 
